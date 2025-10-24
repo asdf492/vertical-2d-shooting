@@ -4,23 +4,22 @@ using UnityEngine;
 
 public class Boom : MonoBehaviour
 {
-    void Start()
-    {
-        StartCoroutine(End());
-    }
+    public Action onFinishBoom;
 
-    private void OnTriggerEnter2D(Collider2D other)
+    IEnumerator Start()
     {
-        if (other.CompareTag("Enemy"))
-        {
-            Destroy(other.gameObject);   
-        }
-    }
-
-    IEnumerator End()
-    {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
         
-        Destroy(this.gameObject);
+        
+        onFinishBoom?.Invoke();
+        // if (onFinishBoom != null)
+        // {
+        //     onFinishBoom();  위에거랑 같은 코드
+        // }
+    }
+
+    public void Init()
+    {
+        
     }
 }

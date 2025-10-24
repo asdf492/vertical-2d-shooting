@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     
     private float span = 2;
     private float delta;
-    private int score = 0;
+    public int score = 0;
     
     public bool isGameOver = false;
 

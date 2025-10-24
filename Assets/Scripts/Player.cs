@@ -6,22 +6,35 @@ using UnityEngine.InputSystem.Controls;
 
 public class Player : MonoBehaviour
 {
-    public float speed = 5f;
-    private Animator ani;
+    //public GameObject boomPrefab;
     public GameObject bullet;
-    public GameObject boom;
     public Transform shotPoint;
-    public Transform boomPoint;
     
+    private const int MAX_BOOM = 3;
+    private const int MAX_POWER = 3;
+    
+    //public GameObject boom;
+    
+    //public Transform boomPoint;
+    private Animator ani;
+    private int boom;
+    private int power;
+    
+    public float speed = 5f;
     public int life = 3;
     public Action onGameOver;
     public Action onResetPosition;
+    public Action onBoom;
 
     private float delta = 0;
     private float span = 0.1f;
-    private float boomDelta = 0;
-    private float boomSpan = 9f;
+    // private float boomDelta = 0;
+    // private float boomSpan = 9f;
     private bool isInvinciblility = false;
+    private bool isBoomTime = false;
+    private Coroutine boomCoroutine;
+
+    public bool isBoom = false;
 
     private void Awake()
     {
@@ -32,8 +45,31 @@ public class Player : MonoBehaviour
     {
         Move();
         Shoot();
-        Reload();
         Boom();
+        Reload();
+    }
+
+    private void Boom()
+    {
+        if (!Input.GetButtonDown("Fire2"))
+            return;
+        
+        
+        Debug.Log($"isBoom : {isBoom}");
+        
+        if (isBoom)
+            return;
+
+        if (boom <= 0)
+        {
+            Debug.Log($"boom : {boom}");
+            return;
+        }
+
+        isBoom = true;
+        this.boom--;
+        
+        onBoom();
     }
 
     public void Move()
@@ -84,31 +120,31 @@ public class Player : MonoBehaviour
     public void Reload()
     {
         delta += Time.deltaTime;
-        boomDelta += Time.deltaTime;
+        //boomDelta += Time.deltaTime;
     }
 
-    public void Boom()
-    {
-        if (boomSpan == 9)
-        {
-            boomSpan = 0;
-        }
-        
-        if (!Input.GetButton("Fire2"))
-            return;
-        
-        if (boomDelta < boomSpan)
-            return;
-        
-        Instantiate(boom, boomPoint.position, boomPoint.rotation);
-
-        boomDelta = 0;
-
-        if (boomSpan == 0)
-        {
-            boomSpan = 10f;
-        }
-    }
+    // public void Boom()
+    // {
+    //     if (boomSpan == 9)
+    //     {
+    //         boomSpan = 0;
+    //     }
+    //     
+    //     if (!Input.GetButton("Fire2"))
+    //         return;
+    //     
+    //     if (boomDelta < boomSpan)
+    //         return;
+    //     
+    //     Instantiate(boom, boomPoint.position, boomPoint.rotation);
+    //
+    //     boomDelta = 0;
+    //
+    //     if (boomSpan == 0)
+    //     {
+    //         boomSpan = 10f;
+    //     }
+    // }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -138,6 +174,39 @@ public class Player : MonoBehaviour
                 Destroy(other.gameObject);
                 Debug.Log("적 총알 파괴됨");
             }
+        }
+        else if (other.gameObject.CompareTag("Item"))
+        {
+            Item item = other.gameObject.GetComponent<Item>();
+            switch (item.itemType)
+            {
+                case Item.ItemType.Boom:
+                    Debug.Log("폭탄");
+                    boom++;
+                    if (boom >= MAX_BOOM)
+                    {
+                        boom = MAX_BOOM;
+                        GameManager.Instance.score += 500;
+                    }
+                    break;
+                
+                case Item.ItemType.Coin:
+                    Debug.Log("코인");
+                    GameManager.Instance.score += 1000;
+                    break;
+                
+                case Item.ItemType.Power:
+                    Debug.Log("파워");
+                    power++;
+                    if (power >= MAX_POWER)
+                    {
+                        power = MAX_POWER;
+                        GameManager.Instance.score += 500;
+                    }
+                    break;
+            }
+            
+            Destroy(item.gameObject);
         }
     }
     
