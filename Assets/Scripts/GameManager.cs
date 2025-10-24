@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     
     public Transform[] spawnPoints;
     public GameObject[] enemyPrefabs;
+    public GameObject[] itemPrefabs;
     
     private float span = 2;
     private float delta;
@@ -17,6 +18,7 @@ public class GameManager : MonoBehaviour
     public bool isGameOver = false;
 
     public System.Action<Enemy> onCreateEnemy;
+    public Action onScore;
 
     private void Awake()
     {
@@ -33,8 +35,20 @@ public class GameManager : MonoBehaviour
             Transform spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
 
             GameObject go = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
+            
 
             Enemy enemy = go.GetComponent<Enemy>();
+
+            enemy.onDie = () =>
+            {
+                this.score += 10;
+                onScore();
+                
+                GameObject itemPrefab = itemPrefabs[Random.Range(0, itemPrefabs.Length)];
+                GameObject item = Instantiate(itemPrefab);
+                item.transform.position = enemy.transform.position;  // text 해야함
+            };
+            
             onCreateEnemy(enemy);
             
             span = Random.Range(0.5f, 2.5f);

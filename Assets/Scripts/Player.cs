@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
     
     //public Transform boomPoint;
     private Animator ani;
-    private int boom;
+    public int boom;
     private int power;
     
     public float speed = 5f;
@@ -25,6 +25,8 @@ public class Player : MonoBehaviour
     public Action onGameOver;
     public Action onResetPosition;
     public Action onBoom;
+    public Action onGetBoomItem;
+    public Action onHit;
 
     private float delta = 0;
     private float span = 0.1f;
@@ -159,6 +161,7 @@ public class Player : MonoBehaviour
     
             if (this.life < 0)
             {
+                this.life = 0;
                 Debug.Log("==== GameOver ====");
                 onGameOver();
             }
@@ -166,7 +169,8 @@ public class Player : MonoBehaviour
             {
                 Invoke("ResetPosition", 1f);
             }
-            
+
+            onHit();
             this.gameObject.SetActive(false);
             
             if (other.gameObject.CompareTag("EnemyBullet"))
@@ -188,6 +192,11 @@ public class Player : MonoBehaviour
                         boom = MAX_BOOM;
                         GameManager.Instance.score += 500;
                     }
+                    // else
+                    // {
+                    //     onGetBoomItem();
+                    // }
+                    onGetBoomItem();
                     break;
                 
                 case Item.ItemType.Coin:

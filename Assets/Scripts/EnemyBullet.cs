@@ -21,6 +21,7 @@ public class EnemyBullet : MonoBehaviour
         if (this.transform.position.y > 5.5f)
         {
             Destroy(this.gameObject);
+            Debug.Log("적 총알 제거됨");
         }
     }
 }

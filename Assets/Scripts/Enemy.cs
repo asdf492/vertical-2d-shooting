@@ -22,6 +22,8 @@ public class Enemy : MonoBehaviour
     private float delta = 0;
     private float span = 1;
 
+    public Action onDie;
+
     private Player player;
     public void Init(Player player)
     {
@@ -39,6 +41,7 @@ public class Enemy : MonoBehaviour
         if (this.transform.position.y < -5.5f)
         {
             Destroy(this.gameObject);
+            onDie();
         }
 
         Fire();
@@ -81,9 +84,15 @@ public class Enemy : MonoBehaviour
         coroutine = StartCoroutine(Shoted());
     }
 
-    private void TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
         health -= damage;
+        
+        if (health <= 0)
+        {
+            Destroy(this.gameObject);
+            Debug.Log("적 처치");
+        }
         
         renderer.sprite = sprites[1];
     }
@@ -93,11 +102,5 @@ public class Enemy : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         
         renderer.sprite = sprites[0];
-        
-        if (health <= 0)
-        {
-            Destroy(this.gameObject);
-            Debug.Log("적 처치");
-        }
     }
 }

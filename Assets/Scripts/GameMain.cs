@@ -9,8 +9,18 @@ public class GameMain : MonoBehaviour
     
     void Start()
     {
+        player.onHit = () =>
+        {
+            uiGame.UpdateLivesGo(player.life);
+        };
+        player.onGetBoomItem = () =>
+        {
+            uiGame.UpdateBoomsItemGo(player.boom);
+        };
         player.onBoom = () =>
         {
+            uiGame.UpdateBoomsItemGo(player.boom);
+            
             GameObject boomGo = Instantiate(boomPrefab);
             Boom boom = boomGo.GetComponent<Boom>();
             boom.onFinishBoom = () =>
