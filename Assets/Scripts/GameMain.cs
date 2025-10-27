@@ -42,7 +42,11 @@ public class GameMain : MonoBehaviour
             GameManager.Instance.isGameOver = true;
             uiGameOver.Show();
         };
-        
+
+        GameManager.Instance.onScore = () =>
+        {
+            uiGame.UpdateScoreText();
+        };
         GameManager.Instance.onCreateEnemy = (enemy) =>
         {
             enemy.Init(player);

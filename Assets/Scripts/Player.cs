@@ -6,8 +6,10 @@ using UnityEngine.InputSystem.Controls;
 
 public class Player : MonoBehaviour
 {
+    
     //public GameObject boomPrefab;
-    public GameObject bullet;
+    //public GameObject bullet;
+    public GameObject[] playerBulletPrefabs;
     public Transform shotPoint;
     
     private const int MAX_BOOM = 3;
@@ -18,7 +20,7 @@ public class Player : MonoBehaviour
     //public Transform boomPoint;
     private Animator ani;
     public int boom;
-    private int power;
+    public int power = 1;
     
     public float speed = 5f;
     public int life = 3;
@@ -113,10 +115,17 @@ public class Player : MonoBehaviour
 
         if (delta < span)
             return;
-        
-        Instantiate(bullet, shotPoint.position, shotPoint.rotation);
+
+        GameObject bulletPrefab = GetPlayerBullet();
+        Instantiate(bulletPrefab, shotPoint.position, shotPoint.rotation);
         
         delta = 0;
+    }
+
+    public GameObject GetPlayerBullet()
+    {
+        int index = power - 1;
+        return playerBulletPrefabs[index];
     }
 
     public void Reload()
@@ -190,7 +199,7 @@ public class Player : MonoBehaviour
                     if (boom >= MAX_BOOM)
                     {
                         boom = MAX_BOOM;
-                        GameManager.Instance.score += 500;
+                        GameManager.Instance.AddScore(500);
                     }
                     // else
                     // {
@@ -201,7 +210,7 @@ public class Player : MonoBehaviour
                 
                 case Item.ItemType.Coin:
                     Debug.Log("코인");
-                    GameManager.Instance.score += 1000;
+                    GameManager.Instance.AddScore(1000);
                     break;
                 
                 case Item.ItemType.Power:
@@ -210,7 +219,7 @@ public class Player : MonoBehaviour
                     if (power >= MAX_POWER)
                     {
                         power = MAX_POWER;
-                        GameManager.Instance.score += 500;
+                        GameManager.Instance.AddScore(500);
                     }
                     break;
             }
