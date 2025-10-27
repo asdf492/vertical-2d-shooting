@@ -10,7 +10,8 @@ public class Bullet : MonoBehaviour
         this.transform.Translate(Vector3.up * speed * Time.deltaTime);
         if (this.transform.position.y > 5.5f)
         {
-            Destroy(this.gameObject);
+            //Destroy(this.gameObject);
+            ObjectPool.Instance.ReleasePlayerBullet0Go(this.gameObject);
         }
     }
 
@@ -18,7 +19,11 @@ public class Bullet : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Enemy"))
         {
-            Destroy(this.gameObject);   
+            Enemy enemy = other.gameObject.GetComponent<Enemy>();
+            enemy.TakeDamage(1);
+            
+            //Destroy(this.gameObject);
+            ObjectPool.Instance.ReleasePlayerBullet0Go(this.gameObject);
         }
     }
 }

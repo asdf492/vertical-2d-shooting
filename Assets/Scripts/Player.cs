@@ -35,7 +35,7 @@ public class Player : MonoBehaviour
     // private float boomDelta = 0;
     // private float boomSpan = 9f;
     private bool isInvinciblility = false;
-    private bool isBoomTime = false;
+    //private bool isBoomTime = false;
     private Coroutine boomCoroutine;
 
     public bool isBoom = false;
@@ -116,8 +116,12 @@ public class Player : MonoBehaviour
         if (delta < span)
             return;
 
-        GameObject bulletPrefab = GetPlayerBullet();
-        Instantiate(bulletPrefab, shotPoint.position, shotPoint.rotation);
+        // GameObject bulletPrefab = GetPlayerBullet();
+        // Instantiate(bulletPrefab, shotPoint.position, shotPoint.rotation);
+
+        GameObject go = ObjectPool.Instance.GetPlayerBullet0();
+        go.transform.position = shotPoint.position;
+        go.transform.rotation = shotPoint.rotation;
         
         delta = 0;
     }

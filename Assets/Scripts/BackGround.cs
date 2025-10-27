@@ -13,9 +13,17 @@ public class BackGround : MonoBehaviour
     {
         this.viewHeight = Camera.main.orthographicSize * 2;
 
+        // 단순 순환
         // for (int i = 0; i < 10; i++)
         // {
         //     int idx = i % 3;
+        // }
+
+        // 이전 인덱스로 순환 하고싶을 때
+        // int length = 3;
+        // for (int i = 0; i < 10; i++)
+        // {
+        //     int idx = i - 1 + length % length;
         // }
     }
 
